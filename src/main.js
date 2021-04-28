@@ -9,14 +9,17 @@ const alumnos = []
 let id = 0
 
 app.get('/alumnos', (req, res) => {
-  let minMax = req.query
-  console.log("minmax", minMax)
-  if (!minMax) {
-    let alumnosRango = alumnos.filter(a => a.edad >= minMax.min && a.edad <= minMax.max)
+  let peticion = req.query
+  console.log("peticion", peticion)
+
+  if (peticion.hasOwnProperty('min')) {
+    let alumnosRango = alumnos.filter(a => a.edad >= peticion.min && a.edad <= peticion.max)
     console.log("Alumnos en rango", alumnosRango)
+  } else if (peticion.hasOwnProperty('dni')) {
+    let alumnoPorDni = alumnos.find(a => a.dni == peticion.dni);
+    alumnoPorDni ? console.log(alumnoPorDni) : console.log("No hay alumno con ese dni")
   } else {
-    // res.json({ alumnos })
-    console.log("Soy el array de alumnos", alumnos)
+    console.log("get all", alumnos)
   }
 })
 
@@ -47,13 +50,15 @@ app.post('/alumnos', (req, res) => {
   res.status(201).json(req.body)
 })
 
-app.put('/alumnos', (req, res) => {
-  res.json({ msg: req.body })
+app.put('/alumnos/:id', (req, res) => {
+  res.send({ params: req.params, data: req.body, alum: alumnos })
+  //console.log("Put",alumnos)
 })
 
 app.delete('/alumnos', (req, res) => {
-  console.log(req.body)
-  res.json({ msg: req.body })
+  //console.log(req.body)
+  //res.json({ msg: req.body })
+  console.log("Delete", alumnos)
 })
 
 const puerto = 8080
